@@ -1,0 +1,33 @@
+version: 2
+project_name: coptonix-rs232-i2c
+before:
+  hooks:
+    - go mod download
+    - go generate ./...
+    - go mod tidy
+builds:
+  - dir: tools/cli
+    binary: coptonix-rs232-i2c
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+      - arm
+    goarm:
+      - 7
+    ldflags:
+      - -s -w
+      - -X main.version={{ if index .Env "VERSION" }}{{ .Env.VERSION }}{{ else }}{{ .Version }}{{ end }}
+archives:
+  - name_template: '{{ .ProjectName }}_{{ if index .Env "VERSION" }}{{ .Env.VERSION }}{{ else }}{{ .Version }}{{ end }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'
+    formats:
+      - zip
+checksum:
+  name_template: 'checksums.txt'
+changelog:
+  disable: true
+release:
+  disable: true
