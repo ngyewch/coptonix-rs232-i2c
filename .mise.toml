@@ -1,7 +1,7 @@
 [tools]
 task = '3.45.4'
 go = '1.25.3'
-goreleaser = '2.12.5'
+goreleaser = '2.12.7'
 act = '0.2.82'
 'golangci-lint' = '2.5.0'
 'ubi:dominikh/go-tools' = { version = '2025.1.1', exe = 'staticcheck', tar_regex = '^staticcheck_\.' }
