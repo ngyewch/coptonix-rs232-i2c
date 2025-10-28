@@ -10,15 +10,20 @@ import (
 
 // Bus interface for the Coptonix RS232-I2C device.
 type Bus struct {
-	name string
-	dev  *coptonixrs232i2c.Dev
+	name    string
+	dev     *coptonixrs232i2c.Dev
+	options *Options
 }
 
 // NewBus constructs a new Bus instance.
-func NewBus(name string, dev *coptonixrs232i2c.Dev) *Bus {
+func NewBus(name string, dev *coptonixrs232i2c.Dev, options *Options) *Bus {
+	if options == nil {
+		options = &DefaultOptions
+	}
 	return &Bus{
-		name: name,
-		dev:  dev,
+		name:    name,
+		dev:     dev,
+		options: options,
 	}
 }
 
@@ -34,6 +39,13 @@ func (bus *Bus) String() string {
 
 // Tx does a single transaction.
 func (bus *Bus) Tx(addr uint16, w, r []byte) error {
+	var err error
+	if bus.options.AddrMapper != nil {
+		addr, err = bus.options.AddrMapper(addr)
+		if err != nil {
+			return err
+		}
+	}
 	if addr >= 0x80 {
 		return fmt.Errorf("address out of range")
 	}
