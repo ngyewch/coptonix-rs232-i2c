@@ -1,16 +1,15 @@
 version: 3
 
 tasks:
-  preBuild:
-    cmds:
-      - go mod download
-      - go mod tidy
-
   build:
     desc: Build
-    deps: [ preBuild ]
     cmds:
-      - go build ./...
+      - goreleaser build --snapshot --clean
+
+  build-single:
+    desc: Build (single)
+    cmds:
+      - goreleaser build --snapshot --clean --single-target --output dist/coptonix-rs232c-i2c
 
   dependencyUpdates:
     desc: Show dependency updates
