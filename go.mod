@@ -1,6 +1,6 @@
 module github.com/ngyewch/coptonix-rs232-i2c
 
-go 1.25.3
+go 1.22.6
 
 require (
 	github.com/stretchr/testify v1.11.1
