@@ -23,7 +23,7 @@ func NewOpener(name string, portName string, mode *serial.Mode, options *Options
 				return nil, err
 			}
 			dev := coptonixrs232i2c.New(serialPort)
-			bus = NewBus(name, dev)
+			bus = NewBus(name, dev, options)
 			busMap[name] = bus
 		}
 		return bus, nil
