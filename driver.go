@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log/slog"
 	"strings"
+	"sync"
 
 	"go.bug.st/serial"
 )
@@ -20,7 +21,8 @@ var (
 )
 
 type Dev struct {
-	port serial.Port
+	port  serial.Port
+	mutex sync.Mutex
 }
 
 func New(port serial.Port) *Dev {
@@ -34,6 +36,9 @@ func (dev *Dev) Close() error {
 }
 
 func (dev *Dev) ReadI2C(addr uint8, bytesToRead uint8) ([]uint8, bool, error) {
+	dev.mutex.Lock()
+	defer dev.mutex.Unlock()
+
 	err := dev.writeRequestString(fmt.Sprintf("R%02X%02X", addr, bytesToRead))
 	if err != nil {
 		return nil, false, err
@@ -73,6 +78,9 @@ func (dev *Dev) ReadI2C(addr uint8, bytesToRead uint8) ([]uint8, bool, error) {
 }
 
 func (dev *Dev) WriteI2C(addr uint8, data []uint8) (bool, error) {
+	dev.mutex.Lock()
+	defer dev.mutex.Unlock()
+
 	err := dev.writeRequestString(fmt.Sprintf("w%02X%s", addr, strings.ToUpper(hex.EncodeToString(data))))
 	if err != nil {
 		return false, err
@@ -104,6 +112,9 @@ func (dev *Dev) WriteI2C(addr uint8, data []uint8) (bool, error) {
 }
 
 func (dev *Dev) CheckSlaveAddress(addr uint8) (bool, error) {
+	dev.mutex.Lock()
+	defer dev.mutex.Unlock()
+
 	err := dev.writeRequestString(fmt.Sprintf("c%02X", addr))
 	if err != nil {
 		return false, err
@@ -135,6 +146,9 @@ func (dev *Dev) CheckSlaveAddress(addr uint8) (bool, error) {
 }
 
 func (dev *Dev) ScanI2C() ([]uint8, error) {
+	dev.mutex.Lock()
+	defer dev.mutex.Unlock()
+
 	err := dev.writeRequestString("C")
 	if err != nil {
 		return nil, err
@@ -158,6 +172,9 @@ func (dev *Dev) ScanI2C() ([]uint8, error) {
 }
 
 func (dev *Dev) GetSCLFrequency() (uint32, error) {
+	dev.mutex.Lock()
+	defer dev.mutex.Unlock()
+
 	err := dev.writeRequestString("I")
 	if err != nil {
 		return 0, err
@@ -178,6 +195,9 @@ func (dev *Dev) GetSCLFrequency() (uint32, error) {
 }
 
 func (dev *Dev) SetSCLFrequency(freq uint32) (uint32, error) {
+	dev.mutex.Lock()
+	defer dev.mutex.Unlock()
+
 	err := dev.writeRequestString(fmt.Sprintf("E%s", hex.EncodeToString(binary.LittleEndian.AppendUint32(nil, freq))))
 	if err != nil {
 		return 0, err
