@@ -67,13 +67,16 @@ var (
 	}
 
 	slaveAddressArg = &cli.Uint8Arg{
-		Name: "slave-address",
+		Name:      "slave-address",
+		UsageText: "(slave-address)",
 	}
 	countArg = &cli.Uint8Arg{
-		Name: "count",
+		Name:      "count",
+		UsageText: "(count)",
 	}
 	dataArg = &cli.StringArg{
-		Name: "data",
+		Name:      "data",
+		UsageText: "(data)",
 	}
 
 	app = &cli.Command{

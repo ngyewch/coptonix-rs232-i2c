@@ -11,6 +11,9 @@ import (
 )
 
 func doReadI2C(ctx context.Context, cmd *cli.Command) error {
+	if cmd.NArg() != 2 {
+		return fmt.Errorf("incorrect number of arguments")
+	}
 	slaveAddress := cmd.Uint8Arg(slaveAddressArg.Name)
 	count := cmd.Uint8Arg(countArg.Name)
 
@@ -41,6 +44,9 @@ func doReadI2C(ctx context.Context, cmd *cli.Command) error {
 }
 
 func doWriteI2C(ctx context.Context, cmd *cli.Command) error {
+	if cmd.NArg() != 2 {
+		return fmt.Errorf("incorrect number of arguments")
+	}
 	slaveAddress := cmd.Uint8Arg(slaveAddressArg.Name)
 	dataString := cmd.StringArg(dataArg.Name)
 
@@ -69,6 +75,9 @@ func doWriteI2C(ctx context.Context, cmd *cli.Command) error {
 }
 
 func doScanI2C(ctx context.Context, cmd *cli.Command) error {
+	if cmd.NArg() != 0 {
+		return fmt.Errorf("incorrect number of arguments")
+	}
 	serialPort, err := newSerialPort(ctx, cmd)
 	if err != nil {
 		return err
@@ -92,6 +101,9 @@ func doScanI2C(ctx context.Context, cmd *cli.Command) error {
 }
 
 func doCheckSlaveAddr(ctx context.Context, cmd *cli.Command) error {
+	if cmd.NArg() != 1 {
+		return fmt.Errorf("incorrect number of arguments")
+	}
 	slaveAddress := cmd.Uint8Arg(slaveAddressArg.Name)
 
 	serialPort, err := newSerialPort(ctx, cmd)
