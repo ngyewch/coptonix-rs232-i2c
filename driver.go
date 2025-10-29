@@ -90,28 +90,14 @@ func (dev *Dev) WriteI2C(addr uint8, data []uint8) (bool, error) {
 	}
 	responseCode := responseData[1]
 	responseSlaveAddr := responseData[2]
-	responseCount := responseData[(len(responseData) - 1)]
 	if responseSlaveAddr != addr {
 		return false, fmt.Errorf("invalid response, slave address mismatch")
 	}
-	if int(responseCount) != len(data) {
-		return false, fmt.Errorf("invalid response, count mismatch")
-	}
 	switch responseCode {
 	case 0x00:
-		data2 := responseData[3 : len(responseData)-1]
-		if len(data2) != int(responseCount) {
-			return false, fmt.Errorf("invalid response, write count mismatch")
-		}
 		return false, nil
 	case 0x01:
 		return true, nil
-	case 0x10:
-		return false, fmt.Errorf("write error")
-	case 0x20:
-		return false, fmt.Errorf("read error")
-	case 0x30:
-		return false, fmt.Errorf("unknown error")
 	default:
 		return false, fmt.Errorf("invalid response, unknown result code")
 	}
